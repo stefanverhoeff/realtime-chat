@@ -5,8 +5,9 @@ window.onload = function() {
     var socket = io.connect('http://localhost:' + port);
     var name = document.getElementById("name");
     var field = document.getElementById("field");
-    var sendButton = document.getElementById("send");
     var content = document.getElementById("content");
+    var sendButton = document.getElementById("send");
+    var colorButton = document.getElementById("color");
 
     var ls = localStorage;
 
@@ -15,7 +16,7 @@ window.onload = function() {
             messages.push(data);
             var html = '';
             for(var i=0; i<messages.length; i++) {
-                html += messages[i].person + '> ' + messages[i].message + '<br />';
+                html += '<span style="color: ' + messages[i].color + '">' + messages[i].person + '</font>&gt;  ' + messages[i].message + '</span><br />';
             }
             content.innerHTML = html;
         } else {
@@ -23,8 +24,22 @@ window.onload = function() {
         }
     });
 
+    randomColor = function () {
+        return '#'+Math.floor(Math.random()*16777215).toString(16);
+    };
 
-    function sendChatMessage() {
+    changeColor = function (color) {
+        color = color || randomColor();
+        colorButton.style['background-color'] = color;
+        ls.color = color;
+    };
+
+    colorButton.onclick = function () {
+        changeColor();
+        field.focus();
+    };
+
+    sendChatMessage = function () {
         var person = name.value;
         var color = ls.color;
         var text = field.value;
@@ -32,7 +47,7 @@ window.onload = function() {
         socket.emit('send', { person: person, color: color, message: text});
 
         field.value = '';
-    }
+    };
 
     sendButton.onclick = sendChatMessage;
 
@@ -59,6 +74,7 @@ window.onload = function() {
         ls.name = 'Person ' + ('' + Math.random()) .substr(3, 3);
     }
 
+    changeColor(ls.color);
     name.value = ls.name;
 
     // Ready to chat
