@@ -1,8 +1,7 @@
 window.onload = function() {
 
-    var port = 3000;
     var messages = [];
-    var socket = io.connect('http://localhost:' + port);
+    var socket = io.connect();
     var name = document.getElementById("name");
     var field = document.getElementById("field");
     var content = document.getElementById("content");
